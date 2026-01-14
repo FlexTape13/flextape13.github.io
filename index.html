@@ -159,6 +159,37 @@
             background: #555;
         }
 
+        /* Skip Button */
+        #skip-btn {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            left: auto;
+            transform: none;
+            background: #900;
+            color: #fff;
+            border: 2px solid #f00;
+            padding: 15px 30px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.2em;
+            cursor: pointer;
+            pointer-events: auto; /* Enable clicking despite ui-layer pointer-events: none */
+            box-shadow: 0 0 15px #f00;
+            z-index: 50;
+            text-transform: uppercase;
+            animation: pulse-red 2s infinite;
+        }
+        #skip-btn:hover {
+            background: #b00;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 10px #f00; }
+            50% { box-shadow: 0 0 25px #f00; }
+            100% { box-shadow: 0 0 10px #f00; }
+        }
+
         /* Start Screen */
         #start-screen {
             position: absolute;
@@ -298,6 +329,9 @@
                 <div id="boss-health-bar" style="width: 100%; height: 100%; background: #900;"></div>
             </div>
         </div>
+        
+        <!-- Skip Button -->
+        <button id="skip-btn" onclick="skipBoss()">Skip Boss Fight</button>
     </div>
 
     <!-- Lore/Item Modal -->
@@ -344,6 +378,10 @@
 </div>
 
 <script>
+// GAME ENGINE & LOGIC - Moved to top to avoid hoisting issues
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
 /**
  * AUDIO SYSTEM (Simple Oscillator Synth)
  */
@@ -351,6 +389,16 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const gainNode = audioCtx.createGain();
 gainNode.connect(audioCtx.destination);
 gainNode.gain.value = 0.1;
+
+// MOUSE INPUT TRACKING
+const mouse = { x: 0, y: 0 };
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    mouse.x = (e.clientX - rect.left) * scaleX;
+    mouse.y = (e.clientY - rect.top) * scaleY;
+});
 
 function playSound(type) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -403,12 +451,6 @@ function playSound(type) {
         osc.stop(now + 0.3);
     }
 }
-
-/**
- * GAME ENGINE & LOGIC
- */
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
 
 let gameState = 'START'; // START, CUTSCENE, PLAY, PAUSE, WIN, GAMEOVER
 let dt = 0;
@@ -536,6 +578,47 @@ class Entity {
     }
 }
 
+class Sign extends Entity {
+    constructor(x, y, text) {
+        super(x, y, 30, 40, '#8B4513');
+        this.text = text;
+    }
+
+    update() {
+        // Signs don't move
+    }
+
+    draw(ctx, camX, camY) {
+        let dx = this.x - camX;
+        let dy = this.y - camY;
+        
+        // Post
+        ctx.fillStyle = '#5C4033';
+        ctx.fillRect(dx + 13, dy + 20, 4, 20);
+        
+        // Board
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(dx, dy, 30, 20);
+        ctx.strokeStyle = '#3e1e05';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(dx, dy, 30, 20);
+        
+        // Symbol
+        ctx.fillStyle = '#fff';
+        ctx.font = "bold 14px Lato";
+        ctx.textAlign = "center";
+        ctx.fillText("i", dx + 15, dy + 15);
+        ctx.textAlign = "left";
+    }
+
+    isHovered(camX, camY) {
+        let dx = this.x - camX;
+        let dy = this.y - camY;
+        return (mouse.x >= dx && mouse.x <= dx + this.w &&
+                mouse.y >= dy && mouse.y <= dy + this.h);
+    }
+}
+
 class Player extends Entity {
     constructor(x, y) {
         super(x, y, 20, 30, '#fff');
@@ -544,6 +627,7 @@ class Player extends Entity {
         this.soul = 0;
         this.maxSoul = 100;
         this.deaths = 0; // New death tracker
+        this.bossDeaths = 0; // Specific boss death tracker
         this.facing = 1; // 1 right, -1 left
         this.invincible = 0;
         
@@ -731,6 +815,12 @@ class Player extends Entity {
 
             // Boss Fight Logic: If boss is active, reset the boss fight
             if (boss && boss.active) {
+                this.bossDeaths++;
+                if (this.bossDeaths >= 10) {
+                    document.getElementById('skip-btn').style.display = 'block';
+                    createFloatingText(this.x, this.y - 120, "SKIP AVAILABLE", '#ffaa00', 360);
+                }
+
                 boss.reset();
                 this.hp = this.maxHp;
                 // Respawn outside boss room
@@ -817,8 +907,18 @@ class Player extends Entity {
             ctx.fillStyle = '#C0C0C0';
             ctx.fillRect(10, -10, 5, 20);
             
+            // Determine Blade Color based on upgrades (Hierarchy: Vanco > Dapto > Amox > Default)
+            let bladeColor = '#E0E0E0';
+            if (this.hasVancomycin) {
+                bladeColor = '#00ffaa';
+            } else if (this.hasDaptomycin) {
+                bladeColor = '#00ccff';
+            } else if (this.hasAmoxicillin) {
+                bladeColor = '#ff99cc';
+            }
+
             // Blade
-            ctx.fillStyle = '#E0E0E0';
+            ctx.fillStyle = bladeColor;
             ctx.beginPath();
             ctx.moveTo(15, -5);
             ctx.lineTo(55, -5); // Tip start
@@ -892,22 +992,24 @@ class Enemy extends Entity {
                     createFloatingText(this.x, this.y - 20, "RESISTED!", '#cc99ff');
                 }
                 
+                // Always play hit sound for feedback
+                playSound('hit');
+
                 if (dmg > 0) {
                     this.hp -= dmg;
-                    playSound('hit');
                     createParticles(this.x + 15, this.y + 15, '#ffaa00', 5);
                     player.soul = Math.min(player.soul + 15, player.maxSoul);
                     updateUI();
+                }
 
-                    // Pogo Logic
-                    if (player.attackHitbox.type === 'pogo') {
-                        player.vy = JUMP_FORCE; // Bounce up
-                        player.dashCooldown = 0; // Reset dash
-                        player.dashTimer = 0; 
-                    } else {
-                        // Knockback enemy
-                        this.x += player.facing * 10;
-                    }
+                // Pogo Logic - Always active on hit (even if 0 damage)
+                if (player.attackHitbox.type === 'pogo') {
+                    player.vy = JUMP_FORCE; // Bounce up
+                    player.dashCooldown = 0; // Reset dash
+                    player.dashTimer = 0; 
+                } else if (dmg > 0) {
+                    // Knockback enemy only if damaged
+                    this.x += player.facing * 10;
                 }
 
                 if (this.hp <= 0) {
@@ -959,6 +1061,16 @@ class Enemy extends Entity {
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(cx, cy, 25, 0, Math.PI*2); // Big ring
+            ctx.stroke();
+            ctx.lineWidth = 1;
+        }
+
+        // Immunity Visual for MSSA (Purple)
+        if (this.type === 'mssa' && !player.hasAmoxicillin) {
+            ctx.strokeStyle = '#ff3333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 25, 0, Math.PI*2);
             ctx.stroke();
             ctx.lineWidth = 1;
         }
@@ -1503,6 +1615,7 @@ let player = new Player(100, 300);
 let platforms = [];
 let enemies = [];
 let pickups = [];
+let signs = [];
 let boss;
 
 function initLevel() {
@@ -1518,6 +1631,10 @@ function initLevel() {
     
     // Hallway
     platforms.push({ x: 1000, y: 500, w: 1000, h: 40 });
+    
+    // Sign for MSSA
+    signs.push(new Sign(1120, 460, "Methicillin-Sensitive S. aureus"));
+
     enemies.push(new Enemy(1200, 470, 'mssa'));
     enemies.push(new Enemy(1500, 470, 'mssa'));
     
@@ -1532,6 +1649,9 @@ function initLevel() {
     // Path to Boss
     platforms.push({ x: 2900, y: 500, w: 2000, h: 40 }); // Long floor to boss
     
+    // Sign for MRSA
+    signs.push(new Sign(3020, 460, "Methicillin-Resistant S. aureus\nTry pogo-ing off the enemy by striking down on it!"));
+
     // MRSA Guard (Gatekeeper)
     let guard = new Enemy(3100, 470, 'mrsa');
     guard.isGatekeeper = true;
@@ -1585,6 +1705,16 @@ function showModal(type) {
 function closeModal() {
     document.getElementById('modal-overlay').classList.remove('active');
     if (gameState !== 'WIN') gameState = 'PLAY';
+}
+
+function skipBoss() {
+    if (boss) {
+        boss.active = true; // Ensure boss updates to trigger death
+        boss.hp = 0;
+        playSound('hit');
+        document.getElementById('skip-btn').style.display = 'none';
+        createFloatingText(player.x, player.y - 50, "SKIPPING...", '#ff0000');
+    }
 }
 
 function startCutscene() {
@@ -1673,8 +1803,8 @@ function gameLoop() {
         drawDust(ctx);
 
         // Draw Platforms
-        ctx.fillStyle = '#151520';
-        ctx.strokeStyle = '#3d3d4d';
+        ctx.fillStyle = '#2a2a38'; // Lighter, more visible fill
+        ctx.strokeStyle = '#555566'; // Brighter border
         ctx.lineWidth = 2;
         for (let p of platforms) {
             ctx.fillRect(p.x - camera.x, p.y - camera.y, p.w, p.h);
@@ -1683,6 +1813,9 @@ function gameLoop() {
 
         // Draw Pickups
         for (let p of pickups) p.draw(ctx, camera.x, camera.y);
+
+        // Draw Signs
+        for (let s of signs) s.draw(ctx, camera.x, camera.y);
 
         // Draw Enemies
         for (let e of enemies) e.draw(ctx, camera.x, camera.y);
@@ -1698,6 +1831,45 @@ function gameLoop() {
         
         // Draw Floating Texts (UI layer essentially, but in world space)
         drawFloatingTexts(ctx, camera.x, camera.y);
+
+        // Draw Sign Tooltips (On Top of Everything)
+        for (let s of signs) {
+            if (s.isHovered(camera.x, camera.y)) {
+                let tx = s.x - camera.x + 15;
+                let ty = s.y - camera.y - 15;
+                
+                ctx.font = "bold 14px Lato";
+                
+                // Handle multiline text
+                const lines = s.text.split('\n');
+                let maxWidth = 0;
+                lines.forEach(line => {
+                    let w = ctx.measureText(line).width;
+                    if (w > maxWidth) maxWidth = w;
+                });
+                
+                let padding = 10;
+                let textWidth = maxWidth + padding * 2;
+                let lineHeight = 20;
+                let boxHeight = (lines.length * lineHeight) + 10;
+                let boxY = ty - boxHeight; // Position box above the sign
+                
+                // Box
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+                ctx.strokeStyle = '#8B4513';
+                ctx.lineWidth = 1;
+                ctx.fillRect(tx - textWidth/2, boxY, textWidth, boxHeight);
+                ctx.strokeRect(tx - textWidth/2, boxY, textWidth, boxHeight);
+                
+                // Text
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = "center";
+                lines.forEach((line, index) => {
+                    ctx.fillText(line, tx, boxY + 20 + (index * lineHeight));
+                });
+                ctx.textAlign = "left";
+            }
+        }
     }
 
     requestAnimationFrame(gameLoop);
