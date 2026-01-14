@@ -3,20 +3,1706 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Processing with OpenAI</title>
+    <title>Hollow Cure: The Antibiotic Knight</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0d0d14; /* Deep dark background */
+            color: #e0e0e0;
+            font-family: 'Lato', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #game-container {
+            position: relative;
+            width: 960px;
+            height: 540px;
+            box-shadow: 0 0 20px #330055;
+            background: linear-gradient(to bottom, #1a1a24, #0b0b10);
+            border: 2px solid #3d3d4d;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* UI Overlays */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .hud-top {
+            display: flex;
+            gap: 20px;
+        }
+
+        .mask-container, .soul-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .death-counter {
+            font-size: 1.2em;
+            color: #ff3333;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 5px #500;
+        }
+
+        .heart {
+            width: 25px;
+            height: 25px;
+            background-color: #ff3333;
+            margin-right: 5px;
+            clip-path: polygon(50% 100%, 100% 35%, 82% 0, 50% 25%, 18% 0, 0 35%);
+            filter: drop-shadow(0 0 5px red);
+        }
+        .heart.broken {
+            background-color: #333;
+            opacity: 0.3;
+            filter: none;
+        }
+
+        .soul-orb {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #aaa;
+            background: rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .soul-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            background: #f0f0f0;
+            box-shadow: 0 0 10px white;
+            transition: height 0.2s;
+        }
+
+        /* Dialog/Modal */
+        #modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        #modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-box {
+            background: #1e1e28;
+            border: 1px solid #555;
+            padding: 30px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 0 30px #000;
+        }
+
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2em;
+            color: #d4af37; /* Gold */
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #ccc;
+        }
+
+        .modal-btn {
+            background: #333;
+            border: 1px solid #777;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: background 0.2s;
+        }
+        .modal-btn:hover {
+            background: #555;
+        }
+
+        /* Start Screen */
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 20, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 4em;
+            color: #f0f0f0;
+            text-shadow: 0 0 20px #330055;
+            margin-bottom: 10px;
+        }
+        .controls-info {
+            margin-top: 30px;
+            font-size: 1.1em;
+            color: #aaa;
+            text-align: center;
+            line-height: 1.8;
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .key {
+            display: inline-block;
+            background: #333;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #555;
+            font-weight: bold;
+            color: #fff;
+            margin: 0 3px;
+        }
+
+        .source-link {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.8em;
+            color: #555;
+            text-decoration: none;
+        }
+        .source-link:hover { text-decoration: underline; color: #888; }
+
+        /* End Screen */
+        #end-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 20, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+        }
+
+        /* Cutscene Screen */
+        #cutscene-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 25;
+            padding: 50px;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .cutscene-text {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5em;
+            color: #f0f0f0;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 800px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .cutscene-prompt {
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #666;
+            animation: pulse 2s infinite;
+            position: absolute;
+            bottom: 50px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Text Processing with OpenAI</h1>
-    <div>
-        <h2>Text Input</h2>
-        <textarea id="textInput" rows="4" cols="50" placeholder="Enter text..."></textarea>
-        <button id="processText">Process Text</button>
-    </div>
-    <div>
-        <h2>Output</h2>
-        <div id="output"></div>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+    <div id="ui-layer">
+        <div class="hud-top">
+            <div class="mask-container" id="health-display">
+                <!-- Masks injected by JS -->
+            </div>
+            <div class="soul-container">
+                <div class="soul-orb">
+                    <div class="soul-fill" id="soul-meter"></div>
+                </div>
+            </div>
+            <div class="death-counter">
+                DEATHS: <span id="death-count-val">0</span>
+            </div>
+        </div>
+        
+        <div id="boss-hud" style="width: 100%; text-align: center; display: none;">
+            <div style="font-family: 'Cinzel', serif; color: #d4af37; font-size: 1.2em; margin-bottom: 5px;">M.R.S.A. COLONY</div>
+            <div style="width: 60%; height: 8px; background: #333; margin: 0 auto; border: 1px solid #555;">
+                <div id="boss-health-bar" style="width: 100%; height: 100%; background: #900;"></div>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Lore/Item Modal -->
+    <div id="modal-overlay">
+        <div class="modal-box">
+            <h2 class="modal-title" id="modal-title-text">Item Acquired</h2>
+            <p class="modal-text" id="modal-body-text">Description goes here.</p>
+            <button class="modal-btn" onclick="closeModal()">Resume</button>
+        </div>
+    </div>
+
+    <!-- End Screen -->
+    <div id="end-screen" style="display: none;">
+        <h1 class="game-title" style="font-size: 2.5em; text-align: center; line-height: 1.4; max-width: 800px;">Congratulations,<br>you have defeated the infection.</h1>
+        <div style="color: #aa5555; font-style: italic; font-size: 1.4em; margin-top: 20px;">But at what cost?</div>
+        <div style="color: #888; font-style: italic; font-size: 1.2em; margin-top: 10px;">Thanks for playing</div>
+        <div id="completion-time" style="color: #d4af37; font-size: 1.2em; margin-top: 15px; font-family: 'Cinzel', serif;"></div>
+        <button class="modal-btn" style="margin-top: 40px;" onclick="location.reload()">Play Again</button>
+    </div>
+
+    <!-- Cutscene Screen -->
+    <div id="cutscene-screen">
+        <div id="cutscene-content" class="cutscene-text"></div>
+        <div class="cutscene-prompt">Press [Z], Space, or Click to Continue</div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen">
+        <h1 class="game-title">HOLLOW CURE</h1>
+        <div style="color: #888; font-style: italic;">The infection is resistant. Find the cure.</div>
+        
+        <div class="controls-info">
+            <div><span class="key">Arrows</span> Move</div>
+            <div style="margin: 5px 0;">
+                <span style="margin-right: 20px;"><span class="key">Z</span> Jump</span>
+                <span><span class="key">X</span> Attack</span>
+            </div>
+            <div><span class="key">C</span> Dash (Requires Upgrade)</div>
+            <div><span class="key">A</span> Focus (Hold to Heal)</div>
+        </div>
+
+        <button class="modal-btn" style="margin-top: 30px; font-size: 1.2em;" onclick="startCutscene()">Enter Organism</button>
+    </div>
+</div>
+
+<script>
+/**
+ * AUDIO SYSTEM (Simple Oscillator Synth)
+ */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const gainNode = audioCtx.createGain();
+gainNode.connect(audioCtx.destination);
+gainNode.gain.value = 0.1;
+
+function playSound(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'jump') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+    } else if (type === 'slash') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc.start(now);
+        osc.stop(now + 0.15);
+    } else if (type === 'hit') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, now);
+        osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+    } else if (type === 'dash') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    } else if (type === 'collect') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.setValueAtTime(600, now + 0.1);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    }
+}
+
+/**
+ * GAME ENGINE & LOGIC
+ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let gameState = 'START'; // START, CUTSCENE, PLAY, PAUSE, WIN, GAMEOVER
+let dt = 0;
+let lastTime = 0;
+let gameStartTime = 0;
+let camera = { x: 0, y: 0 };
+
+// Cutscene Data
+const CUTSCENE_TEXTS = [
+    "<i>Staphylococcus aureus</i> is a bacterium commonly found on the skin and in the nose of about 30% of individuals.<br><br>Most of the time staph does not cause any harm, but it can sometimes cause infections. In healthcare settings, infections can lead to serious or fatal outcomes.",
+    "Humanity forged antibiotics to combat these threats, but misuse has given rise to resistant strains.<br><br>Methicillin-resistant <i>Staphylococcus aureus</i> (MRSA) has evolved to withstand our standard defenses.",
+    "The patient has contracted this resilient pathogen.<br><br>You must enter the organism, locate the correct treatments (Vancomycin & Daptomycin), and eradicate the infection."
+];
+let cutsceneIndex = 0;
+
+// Game Constants
+const GRAVITY = 0.5;
+const FRICTION = 0.8;
+const PLAYER_SPEED = 5;
+const JUMP_FORCE = -10;
+const DASH_SPEED = 12;
+
+// Medical Lore Data
+const LORE = {
+    amoxicillin: {
+        title: "Amoxicillin Acquired",
+        text: "You found <b>Amoxicillin</b>! <br><br><b>Class:</b> Penicillin-class Antibiotic<br><b>Mechanism:</b> Inhibits bacterial cell wall synthesis.<br><br>Amoxicillin is widely used to treat bacterial infections, such as chest infections (pneumonia) and dental abscesses. It works effectively against <i>Methicillin-Sensitive Staphylococcus aureus</i> (MSSA). However, bacteria can evolve to produce enzymes (beta-lactamases) that destroy it, rendering it ineffective against resistant strains like MRSA.<br><br><b>Effect:</b> Your attacks now damage MSSA (Purple Enemies)."
+    },
+    vancomycin: {
+        title: "Vancomycin Acquired",
+        text: "You found <b>Vancomycin</b>! <br><br><b>Class:</b> Glycopeptide Antibiotic<br><b>Mechanism:</b> Inhibits cell wall synthesis by binding to D-Ala-D-Ala precursors.<br><br>Often considered a 'drug of last resort,' Vancomycin is critical for treating severe infections caused by Gram-positive bacteria that are resistant to other antibiotics, specifically MRSA. Unlike Amoxicillin, it is large and complex, usually requiring intravenous administration. Usage must be monitored carefully as it can cause <b>kidney strain</b> (nephrotoxicity).<br><br><b>Effect:</b> Your attacks now damage MRSA."
+    },
+    daptomycin: {
+        title: "Daptomycin Acquired",
+        text: "You found <b>Daptomycin</b>! <br><br><b>Class:</b> Cyclic Lipopeptide Antibiotic<br><b>Mechanism:</b> Binds to the bacterial cell membrane, causing rapid depolarization and cell death.<br><br>Daptomycin is a potent antibiotic used for complicated skin infections and blood infections (bacteremia). Its unique mechanism allows it to target bacteria differently than other antibiotics, providing an alternative when standard treatments fail. Note: It cannot treat pneumonia as it is inactivated by lung surfactants.<br><br><b>Effect:</b> Press 'C' to Dash through enemies and attacks."
+    },
+    win: {
+        title: "Infection Eradicated",
+        text: "The MRSA colony has been neutralized.<br><br>While antibiotics are powerful tools, <b>antimicrobial resistance</b> is a growing global threat. Overuse and misuse of antibiotics accelerate this process.<br><br><b>Prevention:</b><br>- Only use antibiotics when prescribed.<br>- Complete the full treatment course.<br>- Practice good hygiene (hand washing).<br><br>Thank you for playing!"
+    }
+};
+
+// Input
+const keys = {
+    ArrowLeft: false,
+    ArrowRight: false,
+    ArrowUp: false,
+    ArrowDown: false,
+    z: false,
+    x: false,
+    c: false,
+    a: false
+};
+
+const inputState = {
+    jumpPressed: false,
+    dashPressed: false,
+    attackPressed: false
+};
+
+window.addEventListener('keydown', (e) => {
+    // Prevent default scrolling for arrows
+    if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+        e.preventDefault();
+    }
+    
+    // Cutscene Input
+    if (gameState === 'CUTSCENE' && (e.key === 'z' || e.key === 'Z' || e.key === 'Enter' || e.key === ' ')) {
+         nextCutsceneSlide();
+         return;
+    }
+    
+    if (keys.hasOwnProperty(e.key)) {
+        keys[e.key] = true;
+    } else if (e.key.toLowerCase() in keys) {
+        keys[e.key.toLowerCase()] = true;
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    if (keys.hasOwnProperty(e.key)) {
+        keys[e.key] = false;
+    } else if (e.key.toLowerCase() in keys) {
+        keys[e.key.toLowerCase()] = false;
+    }
+    
+    // Reset press flags
+    if (e.key.toLowerCase() === 'z') inputState.jumpPressed = false;
+    if (e.key.toLowerCase() === 'c') inputState.dashPressed = false;
+    if (e.key.toLowerCase() === 'x') inputState.attackPressed = false;
+});
+
+// Classes
+class Entity {
+    constructor(x, y, w, h, color) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.vx = 0;
+        this.vy = 0;
+        this.color = color;
+        this.grounded = false;
+        this.dead = false;
+    }
+
+    draw(ctx, camX, camY) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x - camX, this.y - camY, this.w, this.h);
+    }
+
+    update() {
+        this.vy += GRAVITY;
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+
+    rectIntersect(r1, r2) {
+        // Use >= and <= to allow touching edges without intersection
+        if (!r1 || !r2) return false;
+        return !(r2.x >= r1.x + r1.w || 
+                 r2.x + r2.w <= r1.x || 
+                 r2.y >= r1.y + r1.h || 
+                 r2.y + r2.h <= r1.y);
+    }
+}
+
+class Player extends Entity {
+    constructor(x, y) {
+        super(x, y, 20, 30, '#fff');
+        this.hp = 5;
+        this.maxHp = 5;
+        this.soul = 0;
+        this.maxSoul = 100;
+        this.deaths = 0; // New death tracker
+        this.facing = 1; // 1 right, -1 left
+        this.invincible = 0;
+        
+        // Upgrades
+        this.hasAmoxicillin = false; // New starter weapon
+        this.hasVancomycin = false;
+        this.hasDaptomycin = false;
+        
+        // Dash
+        this.dashing = false;
+        this.dashTimer = 0;
+        this.dashCooldown = 0;
+
+        // Attack
+        this.attacking = false;
+        this.attackTimer = 0;
+        this.attackHitbox = null;
+        this.attackId = 0; // ID to track unique attack instances
+        
+        // Focus
+        this.focusTimer = 0;
+    }
+
+    update(platforms, enemies, timeScale) {
+        // Controls
+        if (gameState !== 'PLAY') return;
+
+        // Healing (Focus)
+        if (keys.a && this.soul >= 33 && this.hp < this.maxHp) {
+            this.focusTimer += timeScale;
+            if (this.focusTimer > 60) { // 1 second hold
+                this.soul -= 33;
+                this.hp++;
+                this.focusTimer = 0;
+                playSound('collect');
+                createParticles(this.x + this.w/2, this.y + this.h/2, '#fff', 10);
+                updateUI();
+            }
+            // Focus visual
+            if (this.focusTimer > 0 && Math.random() > 0.8) {
+                createParticles(this.x + Math.random()*this.w, this.y + Math.random()*this.h, '#fff', 1);
+            }
+            this.vx *= Math.pow(0.5, timeScale); // Slow down while focusing
+            this.vy *= Math.pow(0.5, timeScale); // Fall slower
+        } else {
+            this.focusTimer = 0;
+            
+            // Movement
+            if (!this.dashing) {
+                if (keys.ArrowLeft) { this.vx = -PLAYER_SPEED; this.facing = -1; }
+                else if (keys.ArrowRight) { this.vx = PLAYER_SPEED; this.facing = 1; }
+                else { this.vx *= Math.pow(FRICTION, timeScale); }
+
+                if (keys.z && !inputState.jumpPressed && this.grounded) {
+                    this.vy = JUMP_FORCE;
+                    inputState.jumpPressed = true;
+                    playSound('jump');
+                }
+            }
+
+            // Dash
+            if (keys.c && !inputState.dashPressed && this.hasDaptomycin && this.dashCooldown <= 0) {
+                this.dashing = true;
+                this.dashTimer = 10;
+                this.dashCooldown = 40;
+                this.vx = this.facing * DASH_SPEED;
+                this.vy = 0;
+                inputState.dashPressed = true;
+                playSound('dash');
+            }
+        }
+
+        // Dash Physics
+        if (this.dashing) {
+            this.dashTimer -= timeScale;
+            this.vy = 0; // Anti-gravity during dash
+            createParticles(this.x + this.w/2, this.y + this.h/2, '#00ccff', 2);
+            if (this.dashTimer <= 0) {
+                this.dashing = false;
+                this.vx = 0;
+            }
+        }
+        if (this.dashCooldown > 0) this.dashCooldown -= timeScale;
+
+        // Attack
+        if (keys.x && !inputState.attackPressed && !this.attacking) {
+            this.attacking = true;
+            this.attackTimer = 15;
+            this.attackId++; // Increment attack ID
+            inputState.attackPressed = true;
+            playSound('slash');
+            
+            // Determine direction
+            let ax, ay, aw, ah;
+            let type = 'side'; // Default to side
+            
+            if (keys.ArrowUp) {
+                // Up attack: Bigger box above head
+                ax = this.x - 20; 
+                ay = this.y - 60; 
+                aw = this.w + 40; 
+                ah = 60;
+                type = 'up';
+            } else if (keys.ArrowDown && !this.grounded) {
+                // Pogo attack: Bigger box below feet
+                ax = this.x - 20; 
+                ay = this.y + this.h; 
+                aw = this.w + 40; 
+                ah = 60;
+                type = 'pogo';
+            } else {
+                // Side attack: Longer reach to match sword visual
+                aw = 70; // Increased from 40 to 70
+                ah = this.h + 20; // Slightly taller to catch jumping/falling enemies easily
+                ay = this.y - 10;
+                ax = this.x + (this.facing === 1 ? this.w : -aw);
+                type = 'side';
+            }
+            
+            this.attackHitbox = { x: ax, y: ay, w: aw, h: ah, type: type };
+        }
+
+        if (this.attacking) {
+            this.attackTimer -= timeScale;
+            if (this.attackTimer <= 0) {
+                this.attacking = false;
+                this.attackHitbox = null;
+            }
+        }
+
+        // Physics Integration
+        this.vy += GRAVITY * timeScale;
+        
+        // Collision Detection (X axis)
+        this.x += this.vx * timeScale;
+        for (let p of platforms) {
+            if (this.rectIntersect(this, p)) {
+                if (this.vx > 0) this.x = p.x - this.w;
+                else if (this.vx < 0) this.x = p.x + p.w;
+                this.vx = 0;
+            }
+        }
+
+        // Collision Detection (Y axis)
+        this.y += this.vy * timeScale;
+        this.grounded = false;
+        for (let p of platforms) {
+            if (this.rectIntersect(this, p)) {
+                if (this.vy > 0) {
+                    this.y = p.y - this.h;
+                    this.grounded = true;
+                    // Reset dash on ground
+                    if(!this.dashing) this.dashCooldown = Math.max(0, this.dashCooldown - 5); 
+                }
+                else if (this.vy < 0) this.y = p.y + p.h;
+                this.vy = 0;
+            }
+        }
+
+        // Invincibility
+        if (this.invincible > 0) this.invincible -= timeScale;
+
+        // Screen Boundaries (Death floor)
+        if (this.y > 2000) {
+            this.takeDamage(1, 200, 200); // Respawn
+        }
+    }
+
+    takeDamage(amount, respawnX, respawnY) {
+        if (this.invincible > 0 || this.dashing) return;
+        
+        this.hp -= amount;
+        this.invincible = 60;
+        this.vx = -this.facing * 5;
+        this.vy = -5;
+        playSound('hit');
+        createParticles(this.x, this.y, '#fff', 10);
+        
+        if (this.hp <= 0) {
+            this.deaths++;
+            
+            // Reset attack state on death to prevent bugs
+            this.attacking = false;
+            this.attackHitbox = null; 
+
+            // Boss Fight Logic: If boss is active, reset the boss fight
+            if (boss && boss.active) {
+                boss.reset();
+                this.hp = this.maxHp;
+                // Respawn outside boss room
+                this.x = 3400; 
+                this.y = 400;
+                createFloatingText(this.x, this.y - 80, "FIGHT RESET", '#ff3333', 120);
+                createFloatingText(this.x, this.y - 55, "Hint: Hold UP to aim upwards,", '#cccccc', 360);
+                createFloatingText(this.x, this.y - 30, "remember to dash with C,", '#cccccc', 360);
+                createFloatingText(this.x, this.y - 5, "and hold A to heal when you can", '#cccccc', 360);
+            } else {
+                // Normal respawn
+                this.hp = this.maxHp;
+                this.x = respawnX || 100;
+                this.y = respawnY || 400;
+            }
+        }
+        updateUI();
+    }
+
+    draw(ctx, camX, camY) {
+        // Shadow/Afterimage if dashing
+        if (this.dashing) {
+            ctx.fillStyle = 'rgba(100, 200, 255, 0.5)';
+            ctx.fillRect(this.x - camX - this.vx*2, this.y - camY, this.w, this.h);
+        }
+
+        // Body
+        ctx.fillStyle = this.invincible > 0 && Math.floor(Date.now() / 50) % 2 === 0 ? 'transparent' : '#fff';
+        
+        // Draw "Knight" shape
+        ctx.beginPath();
+        let drawX = this.x - camX;
+        let drawY = this.y - camY;
+        
+        // Horns
+        ctx.moveTo(drawX, drawY);
+        ctx.lineTo(drawX + 5, drawY - 10);
+        ctx.lineTo(drawX + 10, drawY);
+        ctx.lineTo(drawX + 15, drawY - 10);
+        ctx.lineTo(drawX + 20, drawY);
+        
+        // Body Box
+        ctx.rect(drawX, drawY, this.w, this.h);
+        ctx.fill();
+
+        // Eyes
+        ctx.fillStyle = '#000';
+        if (this.facing === 1) {
+            ctx.fillRect(drawX + 14, drawY + 8, 4, 8);
+            ctx.fillRect(drawX + 6, drawY + 8, 4, 8);
+        } else {
+            ctx.fillRect(drawX + 2, drawY + 8, 4, 8);
+            ctx.fillRect(drawX + 10, drawY + 8, 4, 8);
+        }
+
+        // Attack Visual (Sword)
+        if (this.attacking && this.attackHitbox) {
+            ctx.save();
+            // Translate to center of player
+            let cx = this.x - camX + this.w/2;
+            let cy = this.y - camY + this.h/2;
+            ctx.translate(cx, cy);
+
+            let angle = 0;
+            if (this.attackHitbox.type === 'pogo') {
+                angle = Math.PI / 2;
+            } else if (this.attackHitbox.type === 'up') { // Fixed: Explicit check for 'up' type
+                 angle = -Math.PI / 2;
+            } else { // Side
+                angle = (this.facing === 1) ? 0 : Math.PI;
+            }
+            
+            ctx.rotate(angle);
+            
+            // Draw Sword
+            // Offset from center to start of sword
+            ctx.translate(15, 0); 
+            
+            // Handle
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, -3, 10, 6);
+            
+            // Guard
+            ctx.fillStyle = '#C0C0C0';
+            ctx.fillRect(10, -10, 5, 20);
+            
+            // Blade
+            ctx.fillStyle = '#E0E0E0';
+            ctx.beginPath();
+            ctx.moveTo(15, -5);
+            ctx.lineTo(55, -5); // Tip start
+            ctx.lineTo(60, 0);  // Point
+            ctx.lineTo(55, 5);  // Tip end
+            ctx.lineTo(15, 5);
+            ctx.fill();
+
+            // Shine
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(15, -2, 35, 2);
+
+            ctx.restore();
+        }
+        
+        // Shield visual if focusing
+        if (this.focusTimer > 0) {
+            ctx.strokeStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(drawX + 10, drawY + 15, 25, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+    }
+}
+
+class Enemy extends Entity {
+    constructor(x, y, type) {
+        super(x, y, 30, 30, '#a0a');
+        this.type = type; // 'mssa', 'mrsa'
+        this.startHp = type === 'mrsa' ? 10 : 3;
+        this.hp = this.startHp;
+        this.patrolStart = x;
+        this.patrolDist = 100;
+        this.dir = 1;
+        this.isGatekeeper = false; // New property
+        this.lastHitByAttackId = -1; // Track last hit to prevent multi-damage
+    }
+
+    update(timeScale) {
+        if (this.dead) return;
+        
+        // Patrol
+        this.x += this.dir * 2 * timeScale;
+        
+        // Fix: Explicitly check bounds to prevent vibration bug when knocked back
+        if (this.x > this.patrolStart + this.patrolDist) {
+            this.dir = -1; // Force move left
+        } else if (this.x < this.patrolStart - this.patrolDist) {
+            this.dir = 1;  // Force move right
+        }
+
+        // Collision with player
+        if (this.rectIntersect(this, player)) {
+            player.takeDamage(1, 0, 0); // Don't reset position on enemy hit, just bounce
+        }
+
+        // Hit by player
+        if (player.attacking && player.attackHitbox && this.rectIntersect(player.attackHitbox, this)) {
+            // Only take damage if this specific attack hasn't hit us yet
+            if (this.lastHitByAttackId !== player.attackId) {
+                this.lastHitByAttackId = player.attackId;
+                
+                // Check damage type
+                let dmg = 1;
+                if (this.type === 'mrsa' && !player.hasVancomycin) {
+                    dmg = 0; // Immune!
+                    // Feedback text
+                    createFloatingText(this.x, this.y - 20, "RESISTED!", '#ffaa00');
+                } else if (this.type === 'mssa' && !player.hasAmoxicillin) {
+                    dmg = 0; // Immune without basic antibiotic!
+                    createFloatingText(this.x, this.y - 20, "RESISTED!", '#cc99ff');
+                }
+                
+                if (dmg > 0) {
+                    this.hp -= dmg;
+                    playSound('hit');
+                    createParticles(this.x + 15, this.y + 15, '#ffaa00', 5);
+                    player.soul = Math.min(player.soul + 15, player.maxSoul);
+                    updateUI();
+
+                    // Pogo Logic
+                    if (player.attackHitbox.type === 'pogo') {
+                        player.vy = JUMP_FORCE; // Bounce up
+                        player.dashCooldown = 0; // Reset dash
+                        player.dashTimer = 0; 
+                    } else {
+                        // Knockback enemy
+                        this.x += player.facing * 10;
+                    }
+                }
+
+                if (this.hp <= 0) {
+                    this.dead = true;
+                    playSound('hit');
+                    createParticles(this.x + 15, this.y + 15, '#a0a', 15);
+                    
+                    // Gatekeeper Logic: Remove barrier if this specific enemy dies
+                    if (this.isGatekeeper) {
+                        // Remove Gate platforms
+                        for(let i = platforms.length - 1; i >= 0; i--) {
+                            if (platforms[i].isGuardGate) {
+                                createParticles(platforms[i].x + 20, 250, '#00ffaa', 40); 
+                                platforms.splice(i, 1);
+                            }
+                        }
+                        createFloatingText(this.x, this.y - 50, "GATE OPENED", '#00ffaa');
+                    }
+                }
+            }
+            // Removed: player.attacking = false; -> Sword stays visible!
+        }
+    }
+
+    draw(ctx, camX, camY) {
+        if (this.dead) return;
+        
+        ctx.fillStyle = this.type === 'mrsa' ? '#d4af37' : '#9932CC'; // Gold for MRSA, Purple for MSSA
+        ctx.beginPath();
+        // Grape cluster shape
+        let cx = this.x - camX + 15;
+        let cy = this.y - camY + 15;
+        
+        ctx.arc(cx, cy, 10, 0, Math.PI*2);
+        ctx.arc(cx+8, cy+5, 8, 0, Math.PI*2);
+        ctx.arc(cx-5, cy+8, 8, 0, Math.PI*2);
+        ctx.arc(cx, cy-8, 8, 0, Math.PI*2);
+        ctx.fill();
+
+        if (this.type === 'mrsa') {
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+        
+        // Gatekeeper Visual
+        if (this.isGatekeeper && !player.hasVancomycin) {
+            ctx.strokeStyle = '#ff3333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 25, 0, Math.PI*2); // Big ring
+            ctx.stroke();
+            ctx.lineWidth = 1;
+        }
+    }
+}
+
+class Boss {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.w = 80;
+        this.h = 80;
+        this.maxHp = 60;
+        this.hp = this.maxHp;
+        this.phase = 1;
+        this.active = false;
+        this.dead = false; 
+        this.timer = 0;
+        this.shootTimer = 100;
+        this.slamTimer = 180;
+        this.burstTimer = 120; // New Burst Timer
+        
+        // Teleport visuals
+        this.isTeleporting = false;
+        this.teleportDelay = 0;
+        
+        this.vx = 2;
+        this.vy = 2;
+        this.projectiles = [];
+        this.startX = x; // Remember start position
+        this.startY = y;
+        this.baseY = y; // Track the vertical anchor point
+        this.lastHitByAttackId = -1; // Track hits
+    }
+
+    reset() {
+        this.x = this.startX;
+        this.y = this.startY;
+        this.baseY = this.startY; // Reset anchor
+        this.hp = this.maxHp;
+        this.active = false;
+        this.dead = false;
+        this.isTeleporting = false;
+        this.projectiles = [];
+        this.lastHitByAttackId = -1;
+        this.burstTimer = 120; // Reset burst timer
+        this.timer = 0; // Reset animation timer
+        this.vx = 2; // Reset velocity
+        this.vy = 2;
+        this.removeGates(); // Remove gates so player can re-trigger
+        document.getElementById('boss-hud').style.display = 'none';
+    }
+
+    update(timeScale) {
+        if (!player) return; // Prevents crash if player is not ready
+
+        // Activation Logic
+        if (!this.active) {
+            // Trigger slightly inside the arena so the player is well within bounds
+            if (Math.abs(player.x - this.x) < 300) { 
+                this.active = true;
+                this.spawnGates(); // Lock the player in
+                document.getElementById('boss-hud').style.display = 'block';
+                playSound('collect'); // Alert sound
+            }
+            return;
+        }
+
+        // Death Logic
+        if (this.hp <= 0) {
+            if (!this.dead) {
+                this.dead = true;
+                this.removeGates(); // Open the walls
+                document.getElementById('boss-hud').style.display = 'none';
+                createParticles(this.x + 40, this.y + 40, '#d4af37', 50); // Big explosion
+                playSound('collect');
+                // Floating text for clarity
+                createFloatingText(this.x, this.y - 50, "PATH OPENED", '#fff');
+            }
+
+            // Victory Trigger: Player walks out of the arena to the right
+            if (player.x > 4500) {
+                gameState = 'WIN';
+                
+                // Calculate Time
+                let endTime = Date.now();
+                let elapsed = endTime - gameStartTime;
+                let seconds = Math.floor(elapsed / 1000);
+                let minutes = Math.floor(seconds / 60);
+                seconds = seconds % 60;
+                let timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('completion-time').innerText = "COMPLETION TIME: " + timeString;
+                document.getElementById('end-screen').style.display = 'flex';
+            }
+            return; // Stop boss behavior
+        }
+
+        // Projectiles (Moved UP so they update even during teleport)
+        for (let i = this.projectiles.length - 1; i >= 0; i--) {
+            // Safety check in case projectiles were cleared externally (e.g. via reset)
+            if (i >= this.projectiles.length) continue;
+
+            let p = this.projectiles[i];
+            if (!p) continue;
+
+            p.x += p.vx * timeScale;
+            p.y += p.vy * timeScale;
+            p.life -= timeScale;
+            
+            // Collision with player
+            if (p.x < player.x + player.w && p.x + p.w > player.x &&
+                p.y < player.y + player.h && p.y + p.h > player.y) {
+                player.takeDamage(1, 3500, 400);
+
+                // FIX: If player died and boss reset, projectiles array is empty or boss inactive. Stop loop.
+                if (this.projectiles.length === 0 || !this.active) return;
+                
+                this.projectiles.splice(i, 1);
+                continue;
+            }
+
+            if (p.life <= 0) this.projectiles.splice(i, 1);
+        }
+
+        // Phase 2 Burst Attack (Independent of teleport state)
+        if (this.hp < 30) {
+            this.burstTimer -= timeScale;
+            if (this.burstTimer <= 0) {
+                this.shootCircleBurst();
+                this.burstTimer = 350; 
+            }
+        }
+
+        // Teleportation Logic (Phase 2)
+        if (this.isTeleporting) {
+            this.teleportDelay -= timeScale;
+            
+            // Create "warning" particles at the destination (above player)
+            if (Math.random() > 0.5) {
+                createParticles(player.x + 10, player.y - 150, '#d4af37', 1);
+            }
+
+            if (this.teleportDelay <= 0) {
+                // Execute Teleport Reappear
+                this.x = player.x - 40;
+                this.baseY = player.y - 200; // Set new anchor above player
+                this.vy = 15; // Slam down velocity (visual intent)
+                this.isTeleporting = false;
+                this.slamTimer = 180; // Reset slam timer
+                createParticles(this.x + 40, this.baseY + 40, '#d4af37', 20); // Reappear poof
+                playSound('dash');
+            }
+            return; // Don't do other movement while teleporting
+        }
+
+        // Movement (Floating bounce)
+        this.x += this.vx * timeScale;
+        
+        // Calculate Y position relative to base Y to prevent drift
+        this.y = this.baseY + Math.sin(this.timer * 0.05) * 40; 
+        
+        // Arena bounds (stay within the gates)
+        if (this.x < 3650) this.vx = 3;
+        if (this.x > 4350) this.vx = -3;
+
+        this.timer += timeScale;
+
+        // Attacks
+        // Phase 1: Shoot spores
+        this.shootTimer -= timeScale;
+        if (this.shootTimer <= 0) {
+            this.shootSpore();
+            this.shootTimer = 100;
+        }
+        
+        // Phase 2 (HP < 30): Ground Slam
+        if (this.hp < 30) {
+            this.slamTimer -= timeScale;
+            if (this.slamTimer <= 0) {
+                // Start Teleport Sequence instead of instant move
+                this.isTeleporting = true;
+                this.teleportDelay = 40; // ~0.6 seconds warning
+                createParticles(this.x + 40, this.y + 40, '#d4af37', 20); // Vanish poof
+                playSound('dash');
+            }
+        }
+
+        // Collision with Player Attacks
+        if (player.attacking && player.attackHitbox && this.rectIntersect(player.attackHitbox, this)) {
+            // Only hit if new attack ID
+            if (this.lastHitByAttackId !== player.attackId) {
+                this.lastHitByAttackId = player.attackId;
+
+                if (player.hasVancomycin) {
+                    this.hp -= 2;
+                    createParticles(this.x + 40, this.y + 40, '#d4af37', 5);
+                    playSound('hit');
+                    player.soul = Math.min(player.soul + 5, player.maxSoul);
+                    updateUI();
+                    
+                    if (player.attackHitbox.type === 'pogo') {
+                        player.vy = JUMP_FORCE;
+                        player.dashCooldown = 0;
+                    }
+                } else {
+                    createFloatingText(this.x, this.y, "IMMUNE", '#fff');
+                }
+            }
+            // Removed: player.attacking = false;
+        }
+        
+        // Collision Body
+        if (this.rectIntersect(this, player)) {
+             player.takeDamage(1, 3500, 400);
+        }
+
+        // Update Boss HUD
+        document.getElementById('boss-health-bar').style.width = (this.hp / this.maxHp * 100) + '%';
+    }
+    
+    spawnGates() {
+        // Create trapping walls
+        platforms.push({ x: 3600, y: 0, w: 40, h: 500, isGate: true });
+        platforms.push({ x: 4400, y: 0, w: 40, h: 500, isGate: true });
+        
+        // Visual effects for gates appearing
+        createParticles(3620, 250, '#fff', 30);
+        createParticles(4420, 250, '#fff', 30);
+        createFloatingText(player.x, player.y - 100, "TRAPPED!", '#ff3333');
+    }
+
+    removeGates() {
+        // Filter out the gate platforms
+        for(let i = platforms.length - 1; i >= 0; i--) {
+            if (platforms[i].isGate) {
+                createParticles(platforms[i].x + 20, 250, '#fff', 40); // Poof effect
+                platforms.splice(i, 1);
+            }
+        }
+    }
+    
+    shootCircleBurst() {
+        // 8-way particle burst
+        playSound('slash'); // Audio cue
+        createParticles(this.x + 40, this.y + 40, '#ffaa00', 10); // Orange particles
+        
+        const count = 8;
+        for (let i = 0; i < count; i++) {
+            let angle = (Math.PI * 2 * i) / count;
+            this.projectiles.push({
+                x: this.x + 40,
+                y: this.y + 40,
+                vx: Math.cos(angle) * 4,
+                vy: Math.sin(angle) * 4,
+                w: 12, h: 12,
+                life: 180,
+                color: '#ffaa00' // Orange projectile
+            });
+        }
+    }
+
+    shootSpore() {
+        // Shoot towards player
+        let dx = (player.x + player.w/2) - (this.x + 40);
+        let dy = (player.y + player.h/2) - (this.y + 40);
+        let mag = Math.sqrt(dx*dx + dy*dy);
+        
+        this.projectiles.push({
+            x: this.x + 40,
+            y: this.y + 40,
+            vx: (dx/mag) * 6,
+            vy: (dy/mag) * 6,
+            w: 10, h: 10,
+            life: 120,
+            color: '#ff00ff' // Standard Magenta
+        });
+    }
+
+    rectIntersect(r1, r2) {
+        if (!r1 || !r2) return false; // Safety check
+        return !(r2.x > r1.x + r1.w || r2.x + r2.w < r1.x || r2.y > r1.y + r1.h || r2.y + r2.h < r1.y);
+    }
+
+    draw(ctx, camX, camY) {
+        if (!this.active || this.dead) return; // Don't draw if dead
+        
+        // Draw Projectiles (Moved to top so they are always visible)
+        for (let p of this.projectiles) {
+            ctx.fillStyle = p.color || '#ff00ff'; // Use projectile specific color
+            ctx.beginPath();
+            ctx.arc(p.x - camX, p.y - camY, 5, 0, Math.PI*2);
+            ctx.fill();
+        }
+
+        if (this.isTeleporting) {
+            // Draw ghost/fading effect or just warning reticle
+            // Draw Warning Reticle where boss will appear
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(player.x - camX + 10, player.y - camY - 150, 20 + Math.random()*10, 0, Math.PI*2);
+            ctx.stroke();
+            return; // Don't draw boss body
+        }
+
+        // Draw Boss
+        let bx = this.x - camX;
+        let by = this.y - camY;
+        
+        // Glow
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#d4af37';
+        
+        ctx.fillStyle = '#d4af37'; // Gold
+        // Draw large cluster
+        ctx.beginPath();
+        ctx.arc(bx + 40, by + 40, 40, 0, Math.PI*2); // Main body
+        ctx.fill();
+        
+        // Lumps
+        ctx.fillStyle = '#b8860b';
+        ctx.beginPath();
+        ctx.arc(bx + 20, by + 20, 25, 0, Math.PI*2);
+        ctx.arc(bx + 60, by + 30, 20, 0, Math.PI*2);
+        ctx.arc(bx + 40, by + 70, 20, 0, Math.PI*2);
+        ctx.fill();
+        
+        ctx.shadowBlur = 0;
+        
+        // Eyes
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(bx + 30, by + 40, 5, 0, Math.PI*2);
+        ctx.arc(bx + 50, by + 40, 5, 0, Math.PI*2);
+        ctx.fill();
+    }
+}
+
+class Pickup {
+    constructor(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.w = 30;
+        this.h = 30;
+        this.type = type;
+        this.collected = false;
+        this.floatY = 0;
+        this.timer = 0;
+    }
+
+    update(timeScale) {
+        if (this.collected) return;
+        this.timer += timeScale;
+        this.floatY = Math.sin(this.timer * 0.1) * 5;
+
+        if (this.rectIntersect(this, player)) {
+            this.collected = true;
+            playSound('collect');
+            
+            if (this.type === 'vancomycin') {
+                player.hasVancomycin = true;
+                showModal('vancomycin');
+            } else if (this.type === 'daptomycin') {
+                player.hasDaptomycin = true;
+                showModal('daptomycin');
+            } else if (this.type === 'amoxicillin') {
+                player.hasAmoxicillin = true;
+                showModal('amoxicillin');
+            }
+        }
+    }
+
+    rectIntersect(r1, r2) {
+        return !(r2.x > r1.x + r1.w || r2.x + r2.w < r1.x || r2.y > r1.y + r1.h || r2.y + r2.h < r1.y);
+    }
+
+    draw(ctx, camX, camY) {
+        if (this.collected) return;
+        
+        let dx = this.x - camX;
+        let dy = this.y - camY + this.floatY;
+
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#fff';
+
+        if (this.type === 'vancomycin') {
+            ctx.fillStyle = '#00ffaa'; // Cyan/Green for Vanco
+            // Lance shape
+            ctx.beginPath();
+            ctx.moveTo(dx, dy + 30);
+            ctx.lineTo(dx + 30, dy);
+            ctx.lineTo(dx + 25, dy);
+            ctx.lineTo(dx, dy + 25);
+            ctx.fill();
+        } else if (this.type === 'daptomycin') {
+            ctx.fillStyle = '#00ccff'; // Blue for Dash
+            // Wing shape
+            ctx.beginPath();
+            ctx.moveTo(dx, dy + 15);
+            ctx.lineTo(dx + 30, dy);
+            ctx.lineTo(dx + 30, dy + 30);
+            ctx.fill();
+        } else if (this.type === 'amoxicillin') {
+            // Capsule shape (Pink/White)
+            ctx.fillStyle = '#ff99cc';
+            ctx.beginPath();
+            ctx.arc(dx + 10, dy + 15, 10, Math.PI/2, Math.PI * 1.5);
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(dx + 20, dy + 15, 10, Math.PI * 1.5, Math.PI/2);
+            ctx.fill();
+        }
+        
+        ctx.shadowBlur = 0;
+    }
+}
+
+// Particle System
+let particles = [];
+let floatingTexts = [];
+let dustParticles = [];
+
+function createParticles(x, y, color, count) {
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 10,
+            vy: (Math.random() - 0.5) * 10,
+            life: 30,
+            color: color
+        });
+    }
+}
+
+function updateParticles(timeScale) {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx * timeScale;
+        p.y += p.vy * timeScale;
+        p.life -= timeScale;
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+}
+
+function drawParticles(ctx, camX, camY) {
+    for (let p of particles) {
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life / 30;
+        ctx.fillRect(p.x - camX, p.y - camY, 4, 4);
+        ctx.globalAlpha = 1;
+    }
+}
+
+// Floating Text System
+function createFloatingText(x, y, text, color, duration = 60) {
+    floatingTexts.push({
+        x: x,
+        y: y,
+        text: text,
+        color: color,
+        life: duration,
+        offsetY: 0
+    });
+}
+
+function updateFloatingTexts(timeScale) {
+    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        let ft = floatingTexts[i];
+        ft.life -= timeScale;
+        ft.offsetY -= 0.5 * timeScale;
+        if (ft.life <= 0) floatingTexts.splice(i, 1);
+    }
+}
+
+function drawFloatingTexts(ctx, camX, camY) {
+    ctx.font = "bold 16px Lato";
+    ctx.textAlign = "center";
+    for(let ft of floatingTexts) {
+        ctx.fillStyle = ft.color;
+        // Fade out
+        let alpha = Math.min(1, ft.life / 20);
+        ctx.globalAlpha = alpha;
+        
+        // Text Shadow/Outline for readability
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.strokeText(ft.text, ft.x - camX, ft.y - camY + ft.offsetY);
+        
+        ctx.fillText(ft.text, ft.x - camX, ft.y - camY + ft.offsetY);
+        
+        ctx.globalAlpha = 1;
+    }
+    ctx.textAlign = "left";
+    ctx.lineWidth = 1;
+}
+
+// Dust/Background Particles
+function initDust() {
+    dustParticles = [];
+    for(let i=0; i<80; i++) {
+        dustParticles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            size: Math.random() * 2 + 1,
+            alpha: Math.random() * 0.3 + 0.1
+        });
+    }
+}
+
+function updateDust(timeScale) {
+    for(let p of dustParticles) {
+        p.x += p.vx * timeScale;
+        p.y += p.vy * timeScale;
+        
+        // Wrap around screen (camera space)
+        if(p.x < 0) p.x = canvas.width;
+        if(p.x > canvas.width) p.x = 0;
+        if(p.y < 0) p.y = canvas.height;
+        if(p.y > canvas.height) p.y = 0;
+    }
+}
+
+function drawDust(ctx) {
+    ctx.fillStyle = '#fff';
+    for(let p of dustParticles) {
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+}
+
+// Game State Setup
+let player = new Player(100, 300);
+let platforms = [];
+let enemies = [];
+let pickups = [];
+let boss;
+
+function initLevel() {
+    // Floor
+    platforms.push({ x: 0, y: 500, w: 1000, h: 40 });
+    
+    // Tutorial Jump (Adjusted heights for easier jumping)
+    platforms.push({ x: 400, y: 420, w: 100, h: 20 });
+    platforms.push({ x: 600, y: 340, w: 100, h: 20 });
+    
+    // Amoxicillin Starter (Moved to top of 2nd platform)
+    pickups.push(new Pickup(635, 290, 'amoxicillin'));
+    
+    // Hallway
+    platforms.push({ x: 1000, y: 500, w: 1000, h: 40 });
+    enemies.push(new Enemy(1200, 470, 'mssa'));
+    enemies.push(new Enemy(1500, 470, 'mssa'));
+    
+    // Jump Puzzle for Daptomycin
+    platforms.push({ x: 2000, y: 500, w: 200, h: 40 }); // Pit
+    platforms.push({ x: 2300, y: 450, w: 80, h: 20 });
+    platforms.push({ x: 2500, y: 380, w: 80, h: 20 });
+    platforms.push({ x: 2700, y: 300, w: 200, h: 20 });
+    
+    pickups.push(new Pickup(2800, 250, 'daptomycin'));
+    
+    // Path to Boss
+    platforms.push({ x: 2900, y: 500, w: 2000, h: 40 }); // Long floor to boss
+    
+    // MRSA Guard (Gatekeeper)
+    let guard = new Enemy(3100, 470, 'mrsa');
+    guard.isGatekeeper = true;
+    enemies.push(guard);
+    
+    // Vancomycin Ledge (Requires Dash to reach easily or good jumps)
+    platforms.push({ x: 3200, y: 350, w: 100, h: 20 });
+    pickups.push(new Pickup(3250, 300, 'vancomycin'));
+    
+    // Guard Gate (Blocking boss entry)
+    platforms.push({ x: 3500, y: 0, w: 40, h: 500, isGuardGate: true });
+    
+    // Boss Arena
+    platforms.push({ x: 3600, y: 500, w: 1000, h: 40 }); // Extended floor for the exit run
+    
+    boss = new Boss(4000, 240);
+}
+
+// UI Functions
+function updateUI() {
+    // Health
+    const healthContainer = document.getElementById('health-display');
+    healthContainer.innerHTML = '';
+    for (let i = 0; i < player.maxHp; i++) {
+        let div = document.createElement('div');
+        div.className = 'heart' + (i < player.hp ? '' : ' broken');
+        healthContainer.appendChild(div);
+    }
+
+    // Soul
+    const soulMeter = document.getElementById('soul-meter');
+    soulMeter.style.height = player.soul + '%';
+    
+    // Death Count
+    document.getElementById('death-count-val').innerText = player.deaths;
+}
+
+function showModal(type) {
+    gameState = 'PAUSE';
+    const modal = document.getElementById('modal-overlay');
+    const title = document.getElementById('modal-title-text');
+    const body = document.getElementById('modal-body-text');
+    
+    modal.classList.add('active');
+    
+    const data = LORE[type];
+    title.innerText = data.title;
+    body.innerHTML = data.text;
+}
+
+function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('active');
+    if (gameState !== 'WIN') gameState = 'PLAY';
+}
+
+function startCutscene() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('cutscene-screen').style.display = 'flex';
+    gameState = 'CUTSCENE';
+    cutsceneIndex = -1;
+    nextCutsceneSlide();
+}
+
+function nextCutsceneSlide() {
+    cutsceneIndex++;
+    if (cutsceneIndex >= CUTSCENE_TEXTS.length) {
+        // End Cutscene
+        document.getElementById('cutscene-screen').style.display = 'none';
+        initLevel();
+        initDust();
+        updateUI();
+        gameState = 'PLAY';
+        lastTime = Date.now();
+        gameStartTime = Date.now();
+        gameLoop();
+        return;
+    }
+    
+    const textEl = document.getElementById('cutscene-content');
+    textEl.style.opacity = 0;
+    setTimeout(() => {
+        textEl.innerHTML = CUTSCENE_TEXTS[cutsceneIndex];
+        textEl.style.opacity = 1;
+    }, 500);
+}
+
+// Event listener for clicking cutscene to advance
+document.getElementById('cutscene-screen').addEventListener('click', nextCutsceneSlide);
+
+function gameLoop() {
+    if (gameState === 'PLAY' || gameState === 'WIN') {
+        let now = Date.now();
+        let frameTime = (now - lastTime) / 1000;
+        if (frameTime > 0.1) frameTime = 0.1; // Cap dt to prevent huge skips
+        lastTime = now;
+        
+        // Normalize timeScale to 60 FPS (approx 16.6ms)
+        let timeScale = frameTime * 60;
+
+        // Clear
+        ctx.fillStyle = '#0d0d14';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Update
+        if (gameState === 'PLAY') {
+            player.update(platforms, enemies, timeScale);
+            
+            // Camera follow
+            let targetCamX = player.x - canvas.width / 2 + player.w / 2;
+            let targetCamY = player.y - canvas.height / 2;
+            // Smooth lerp (also technically should be scaled, but 0.1 is soft enough)
+            let camLerp = 1 - Math.pow(0.9, timeScale);
+            camera.x += (targetCamX - camera.x) * camLerp;
+            camera.y += (targetCamY - camera.y) * camLerp;
+            
+            // Clamp camera
+            camera.y = Math.min(Math.max(camera.y, 0), 1000); 
+
+            // Entities
+            updateParticles(timeScale);
+            updateFloatingTexts(timeScale);
+            updateDust(timeScale);
+            for (let e of enemies) e.update(timeScale);
+            for (let p of pickups) p.update(timeScale);
+            boss.update(timeScale);
+        }
+
+        // Draw Environment (Parallax bg stars)
+        ctx.fillStyle = '#1a1a24';
+        for(let i=0; i<100; i++) {
+            let sx = (i * 100 - camera.x * 0.5) % 5000;
+            let sy = (i * 73 - camera.y * 0.5) % 1000;
+            if (sx < 0) sx += 5000;
+            if (sy < 0) sy += 1000;
+            ctx.fillRect(sx, sy, 2, 2);
+        }
+        
+        // Draw Dust (Background layer)
+        drawDust(ctx);
+
+        // Draw Platforms
+        ctx.fillStyle = '#151520';
+        ctx.strokeStyle = '#3d3d4d';
+        ctx.lineWidth = 2;
+        for (let p of platforms) {
+            ctx.fillRect(p.x - camera.x, p.y - camera.y, p.w, p.h);
+            ctx.strokeRect(p.x - camera.x, p.y - camera.y, p.w, p.h);
+        }
+
+        // Draw Pickups
+        for (let p of pickups) p.draw(ctx, camera.x, camera.y);
+
+        // Draw Enemies
+        for (let e of enemies) e.draw(ctx, camera.x, camera.y);
+
+        // Draw Boss
+        boss.draw(ctx, camera.x, camera.y);
+
+        // Draw Player
+        player.draw(ctx, camera.x, camera.y);
+        
+        // Draw Particles
+        drawParticles(ctx, camera.x, camera.y);
+        
+        // Draw Floating Texts (UI layer essentially, but in world space)
+        drawFloatingTexts(ctx, camera.x, camera.y);
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+</script>
 </body>
 </html>
