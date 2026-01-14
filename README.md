@@ -1,2 +1,2 @@
 # Readme
-Basic Website Template Placeholder
+MRSA game for 3001MSC
