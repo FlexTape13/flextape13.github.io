@@ -6,7 +6,7 @@ permalink: /tutorial
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
   <iframe
-    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0"
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&rel=0"
     frameborder="0"
     allow="autoplay; encrypted-media"
     allowfullscreen
@@ -71,6 +71,7 @@ While antibiotic resistance is a defining characteristic of MRSA, environmental 
 ## Disclaimer
 
 This page provides general background information and is not intended as medical advice.
+
 
 ## References
 
