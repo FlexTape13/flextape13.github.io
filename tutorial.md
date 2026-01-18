@@ -75,9 +75,12 @@ This page provides general background information and is not intended as medical
 
 ## References
 
-Bush, K., & Bradford, P. A. (2016). β-Lactams and β-Lactamase Inhibitors: An Overview. Cold Spring Harb Perspect Med, 6(8). https://doi.org/10.1101/cshperspect.a025247 
-Centers for Disease Control and Prevention. (2024). Staphylococcus aureus Basics. https://www.cdc.gov/staphylococcus-aureus/about/index.html
-Menezes, M. N. d., de Marco, B. A., Fiorentino, F. A. M., Zimmermann, A., Kogawa, A. C., & Salgado, H. R. N. (2019). Flucloxacillin: A Review of Characteristics, Properties and Analytical Methods. Critical Reviews in Analytical Chemistry, 49(1), 67-77. https://doi.org/10.1080/10408347.2018.1468728 
-Mergenhagen, K. A., & Borton, A. R. (2014). Vancomycin Nephrotoxicity:A Review. Journal of Pharmacy Practice, 27(6), 545-553. https://doi.org/10.1177/0897190014546114 
-Nagarajan, R. (1991). Antibacterial activities and modes of action of vancomycin and related glycopeptides. Antimicrobial Agents and chemotherapy, 35(4), 605-609. 
+Bush, K., & Bradford, P. A. (2016). β-Lactams and β-lactamase inhibitors: An overview. *Cold Spring Harbor Perspectives in Medicine, 6*(8), a025247. https://doi.org/10.1101/cshperspect.a025247
 
+Centers for Disease Control and Prevention. (2024). *Staphylococcus aureus basics*. https://www.cdc.gov/staphylococcus-aureus/about/index.html
+
+Menezes, M. N. D., de Marco, B. A., Fiorentino, F. A. M., Zimmermann, A., Kogawa, A. C., & Salgado, H. R. N. (2019). Flucloxacillin: A review of characteristics, properties and analytical methods. *Critical Reviews in Analytical Chemistry, 49*(1), 67–77. https://doi.org/10.1080/10408347.2018.1468728
+
+Mergenhagen, K. A., & Borton, A. R. (2014). Vancomycin nephrotoxicity: A review. *Journal of Pharmacy Practice, 27*(6), 545–553. https://doi.org/10.1177/0897190014546114
+
+Nagarajan, R. (1991). Antibacterial activities and modes of action of vancomycin and related glycopeptides. *Antimicrobial Agents and Chemotherapy, 35*(4), 605–609.
