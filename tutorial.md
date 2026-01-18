@@ -3,6 +3,10 @@ layout: page
 title: "tutorial"
 permalink: /tutorial
 ---
+<div class="title-box">
+  <h1>Play_Game!</h1>
+  <p>Official MRSA website</p>
+</div>
 ## ^ Click here to play the game!
 
 **Check out this speedrun from one of our team members!**
