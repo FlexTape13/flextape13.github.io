@@ -78,7 +78,7 @@ body {
 
 .title-link {
   display: block;
-  background-color: #4a4a4a; 
+  background-color: #90EE90; 
   color: white;
   padding: 20px 40px;
   border-radius: 12px;
@@ -90,7 +90,7 @@ body {
 }
 
 .title-link:hover {
-  background-color: #5c5c5c;
+  background-color: #3CB371;
 }
 
 .title-box a,
