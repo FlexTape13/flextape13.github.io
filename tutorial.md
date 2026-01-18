@@ -3,6 +3,7 @@ layout: page
 title: "tutorial"
 permalink: /tutorial
 ---
+^ Click here to play the game!
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
   <iframe
