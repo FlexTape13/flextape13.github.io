@@ -1,8 +1,8 @@
-
+---
 layout: page
 title: "tutorial"
 permalink: /tutorial
-
+---
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
   <iframe
@@ -14,9 +14,9 @@ permalink: /tutorial
   </iframe>
 </div>
 
- MRSA
+MRSA
 
-**Methicillin-resistant *Staphylococcus aureus* (MRSA)** is a type of bacterium that is resistant to several commonly used antibiotics. It is primarily transmitted through direct contact with contaminated skin or surfaces and is commonly associated with healthcare facilities and other environments involving frequent human contact.
+Methicillin-resistant *Staphylococcus aureus* (MRSA) is a type of bacterium that is resistant to several commonly used antibiotics. It is primarily transmitted through direct contact with contaminated skin or surfaces and is commonly associated with healthcare facilities and other environments involving frequent human contact.
 
 This project focuses on the environmental and contact-based aspects of MRSA rather than pharmaceutical treatment.
 
