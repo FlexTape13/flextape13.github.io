@@ -106,24 +106,10 @@ body {
   margin: 0;          
 }
 
-.site-title {
-  font-size: 3rem;
-  font-family: 'Cinzel', serif;
-  color: #e5e7eb; /* light grey */
+/* Targets any link inside your custom container */
+.container1g.markdown-body a {
+  color: #f3f4f6 !important;    /* light grey text */
+  text-decoration: none !important; /* remove underline */
 }
 
-header a,
-header a:visited {
-  color: inherit;
-  text-decoration: none;
-}
-
-
-.site-title,
-.site-title:visited,
-.site-title:hover,
-.site-title:active {
-  color: inherit;
-  text-decoration: none;
-}
 
