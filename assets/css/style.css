@@ -1,10 +1,22 @@
-/* Body text */
+/* Page background */
 body {
+  background-color: #f7f7f7; /* light gray */
   font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
   line-height: 1.7;
   color: #111;
+  margin: 0;
+  padding: 2rem;
 }
+
+/* Optional: make content area slightly separated from edges */
+main {
+  background-color: #ffffff; /* white content box */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
 
 /* Headings */
 h1, h2, h3 {
