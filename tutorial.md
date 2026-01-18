@@ -6,8 +6,8 @@ permalink: /tutorial
 <a href="https://flextape13.github.io">
   <div class="title-box">
     <h1>Play Game!</h1>
-  </div>
-</a>
+  </a>
+</div>
 
 ## ^ Click here to play the game!
 
