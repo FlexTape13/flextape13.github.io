@@ -9,13 +9,14 @@ permalink: /tutorial
 
 Good luck if you want to beat their time
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
+<div class="video-container">
   <iframe
     src="https://www.youtube.com/embed/azHCuCuAYwU"
+    title="Tutorial video"
     frameborder="0"
+    loading="lazy"
     allow="autoplay; encrypted-media"
-    allowfullscreen
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    allowfullscreen>
   </iframe>
 </div>
 
