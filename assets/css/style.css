@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
 
-/* Page background */
+
 body {
-  background-color: #fafafa; /* light gray */
+  background-color: #fafafa;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
   line-height: 1.7;
@@ -11,16 +11,16 @@ body {
   padding: 2rem;
 }
 
-/* Optional: make content area slightly separated from edges */
+
 main {
-  background-color: #ffffff; /* white content box */
+  background-color: #ffffff; 
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 
-/* Headings */
+
 h1, h2, h3 {
   font-family: 'Cinzel', serif;
   font-weight: 700;
@@ -28,12 +28,11 @@ h1, h2, h3 {
 
 
 
-/* Paragraph spacing */
 p {
   margin-bottom: 1em;
 }
 
-/* References section */
+
 .references {
   font-size: 0.95em;
   line-height: 1.6;
@@ -41,8 +40,8 @@ p {
 
 .video-container {
   position: relative;
-  max-width: 900px;      /* controls size */
-  aspect-ratio: 16 / 9;  /* modern, bulletproof */
+  max-width: 900px;    
+  aspect-ratio: 16 / 9;  
   margin: 0 auto 2rem;
 }
 
@@ -53,22 +52,34 @@ p {
   display: block;
 }
 
+
 .title-link {
-  text-decoration: none;   /* removes underline */
+  display: block;
+  background-color: #4a4a4a; 
+  color: white;
+  padding: 20px 40px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
 }
 
-.title-box {
-  display: inline-block;
-  background-color: #3a3a3a; /* dark grey */
-  color: #ffffff;
-  padding: 20px 40px;
-  border-radius: 10px;
-  text-align: center;
-  cursor: pointer;
+.title-link:hover {
+  background-color: #5c5c5c;
+}
+
+.title-box a,
+.title-box a:visited,
+.title-box a:hover,
+.title-box a:active {
+  color: white;
   text-decoration: none;
 }
 
+
 .title-box h1 {
-  margin: 0;               /* important: removes default h1 spacing */
+  margin: 0;          
 }
 
