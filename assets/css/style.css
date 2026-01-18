@@ -106,6 +106,13 @@ body {
   margin: 0;          
 }
 
+.site-title {
+  font-size: 3rem;
+  font-family: 'Cinzel', serif;
+  color: #e5e7eb; /* light grey */
+}
+
+
 .site-title,
 .site-title:visited,
 .site-title:hover,
