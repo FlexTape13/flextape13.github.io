@@ -1,0 +1,29 @@
+/* Global text styling */
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #111;
+}
+
+/* Headings */
+h1, h2, h3 {
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+}
+
+/* Paragraph spacing */
+p {
+  margin-bottom: 1em;
+}
+
+/* References section */
+.references {
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+/* Video spacing */
+video {
+  border: 1px solid #ccc;
+}
