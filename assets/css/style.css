@@ -26,6 +26,24 @@ h1, h2, h3 {
   font-weight: 700;
 }
 
+.title-box {
+  border: 2px solid #ffffff;  /* box around text */
+  padding: 20px;              /* spacing inside box */
+  display: inline-block;       /* fit box to content */
+  text-align: center;
+  background-color: #121212;  /* dark mode box */
+}
+
+.title-box h1 {
+  font-size: 3rem;            /* bigger title font */
+  font-family: 'Cinzel', serif; /* Hollow Knight style font */
+  color: #ffffff;
+}
+
+.title-box p {
+  font-size: 1.2rem;
+  color: #cccccc;
+}
 
 /* Paragraph spacing */
 p {
