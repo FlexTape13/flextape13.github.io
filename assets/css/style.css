@@ -38,7 +38,7 @@ p {
 
 .video-container {
   position: relative;
-  max-width: 600px;      /* controls size */
+  max-width: 900px;      /* controls size */
   aspect-ratio: 16 / 9;  /* modern, bulletproof */
   margin: 0 auto 2rem;
 }
