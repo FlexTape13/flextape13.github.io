@@ -9,7 +9,7 @@ permalink: /tutorial
 
 Good luck if you want to beat their time
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
+<div style="position: relative; max-width: 700px; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 0 auto 2rem;">
   <iframe
     src="https://www.youtube.com/embed/azHCuCuAYwU"
     frameborder="0"
