@@ -11,7 +11,7 @@ Good luck if you want to beat their time
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
   <iframe
-    src="https://www.youtube.com/watch?v=azHCuCuAYwU"
+    src="https://www.youtube.com/embed/azHCuCuAYwU"
     frameborder="0"
     allow="autoplay; encrypted-media"
     allowfullscreen
