@@ -5,7 +5,7 @@ permalink: /tutorial
 ---
 ## ^ Click here to play the game!
 
-**Check out this speedrun from the game's creator!**
+**Check out this speedrun from one of our team members!**
 
 Good luck if you want to beat their time
 
