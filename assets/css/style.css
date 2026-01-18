@@ -32,6 +32,19 @@ p {
   margin-bottom: 1em;
 }
 
+body {
+  background: linear-gradient(180deg, #181818, #0f0f0f);
+  color: #eaeaea;
+}
+
+.title-link {
+  background-color: #3f3f3f;
+}
+
+.title-link:hover {
+  background-color: #555;
+}
+
 
 .references {
   font-size: 0.95em;
