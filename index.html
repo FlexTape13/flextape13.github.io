@@ -361,7 +361,7 @@
     <!-- Start Screen -->
     <div id="start-screen">
         <h1 class="game-title">HOLLOW CURE</h1>
-        <div style="color: #888; font-style: italic;">The infection is resistant. Find the cure.</div>
+        <div style="color: #888; font-style: italic;">A Hollow Knight-inspired game by Group 13.</div>
         
         <div class="controls-info">
             <div><span class="key">Arrows</span> Move</div>
@@ -460,9 +460,9 @@ let camera = { x: 0, y: 0 };
 
 // Cutscene Data
 const CUTSCENE_TEXTS = [
-    "<i>Staphylococcus aureus</i> is a bacterium commonly found on the skin and in the nose of about 30% of individuals.<br><br>Most of the time staph does not cause any harm, but it can sometimes cause infections. In healthcare settings, infections can lead to serious or fatal outcomes.",
-    "Humanity forged antibiotics to combat these threats, but misuse has given rise to resistant strains.<br><br>Methicillin-resistant <i>Staphylococcus aureus</i> (MRSA) has evolved to withstand our standard defenses.",
-    "The patient has contracted this resilient pathogen.<br><br>You must enter the organism, locate the correct treatments (Vancomycin & Daptomycin), and eradicate the infection."
+    "<i>Staphylococcus aureus</i> is a bacterium commonly found on the skin and in the noses of about 30% of individuals (Centers for Disease Control and Prevention, 2024).<br><br>Most of the time staph does not cause any harm, but it can sometimes cause infections. In healthcare settings, infections can lead to serious or fatal outcomes.",
+    "Humanity forged antibiotics to combat these threats, but nobody expected what could come next.<br><br>Methicillin-resistant <i>Staphylococcus aureus</i> (MRSA) had evolved to withstand our standard defenses.",
+    "The patient has contracted this resilient pathogen.<br><br>You must enter the organism, locate the correct treatments, and eradicate the infection."
 ];
 let cutsceneIndex = 0;
 
@@ -477,15 +477,15 @@ const DASH_SPEED = 12;
 const LORE = {
     amoxicillin: {
         title: "Amoxicillin Acquired",
-        text: "You found <b>Amoxicillin</b>! <br><br><b>Class:</b> Penicillin-class Antibiotic<br><b>Mechanism:</b> Inhibits bacterial cell wall synthesis.<br><br>Amoxicillin is widely used to treat bacterial infections, such as chest infections (pneumonia) and dental abscesses. It works effectively against <i>Methicillin-Sensitive Staphylococcus aureus</i> (MSSA). However, bacteria can evolve to produce enzymes (beta-lactamases) that destroy it, rendering it ineffective against resistant strains like MRSA.<br><br><b>Effect:</b> Your attacks now damage MSSA (Purple Enemies)."
+        text: "You found <b>Amoxicillin</b>! <br><br><b>Class:</b> Penicillin-class Antibiotic<br><b>Mechanism:</b> Inhibits bacterial cell wall synthesis (Bush & Bradford, 2016).<br><br>Amoxicillin is widely used to treat bacterial infections, such as chest infections (pneumonia) and dental abscesses. It works effectively against <i>Methicillin-Sensitive Staphylococcus aureus</i> (MSSA). However, bacteria can evolve to produce enzymes (beta-lactamases) that destroy it, rendering it ineffective against resistant strains like MRSA.<br><br><b>Effect:</b> Your attacks now damage MSSA (Purple Enemies)."
     },
     vancomycin: {
         title: "Vancomycin Acquired",
-        text: "You found <b>Vancomycin</b>! <br><br><b>Class:</b> Glycopeptide Antibiotic<br><b>Mechanism:</b> Inhibits cell wall synthesis by binding to D-Ala-D-Ala precursors.<br><br>Often considered a 'drug of last resort,' Vancomycin is critical for treating severe infections caused by Gram-positive bacteria that are resistant to other antibiotics, specifically MRSA. Unlike Amoxicillin, it is large and complex, usually requiring intravenous administration. Usage must be monitored carefully as it can cause <b>kidney strain</b> (nephrotoxicity).<br><br><b>Effect:</b> Your attacks now damage MRSA."
+        text: "You found <b>Vancomycin</b>! <br><br><b>Class:</b> Glycopeptide Antibiotic<br><b>Mechanism:</b> Inhibits cell wall synthesis by binding to D-Ala-D-Ala precursors (Nagarajan, 1991).<br><br>Often considered a 'drug of last resort,' Vancomycin is critical for treating severe infections caused by Gram-positive bacteria that are resistant to other antibiotics, specifically MRSA. Unlike Amoxicillin, it is large and complex, usually requiring intravenous administration. Usage must be monitored carefully as it can cause nephrotoxicity (Mergenhagen & Borton, 2014).<br><br><b>Effect:</b> Your attacks now damage MRSA."
     },
-    daptomycin: {
-        title: "Daptomycin Acquired",
-        text: "You found <b>Daptomycin</b>! <br><br><b>Class:</b> Cyclic Lipopeptide Antibiotic<br><b>Mechanism:</b> Binds to the bacterial cell membrane, causing rapid depolarization and cell death.<br><br>Daptomycin is a potent antibiotic used for complicated skin infections and blood infections (bacteremia). Its unique mechanism allows it to target bacteria differently than other antibiotics, providing an alternative when standard treatments fail. Note: It cannot treat pneumonia as it is inactivated by lung surfactants.<br><br><b>Effect:</b> Press 'C' to Dash through enemies and attacks."
+    flucloxacillin: {
+        title: "Flucloxacillin Acquired",
+        text: "You found <b>Flucloxacillin</b>! <br><br><b>Class:</b> Narrow-spectrum beta-lactam antibiotic<br><b>Mechanism:</b> Inhibits bacterial cell wall synthesis by binding to penicillin-binding proteins (PBPs).<br><br>Flucloxacillin is widely used for skin and soft tissue infections caused by Staph aureus. Unlike Amoxicillin, it is stable against beta-lactamases (enzymes produced by bacteria to destroy penicillin) (Menezes et al., 2019). However, MRSA has evolved to alter the PBP target site itself, rendering even Flucloxacillin ineffective.<br><br><b>Effect:</b> Press 'C' to Dash through enemies and attacks."
     },
     win: {
         title: "Infection Eradicated",
@@ -634,7 +634,7 @@ class Player extends Entity {
         // Upgrades
         this.hasAmoxicillin = false; // New starter weapon
         this.hasVancomycin = false;
-        this.hasDaptomycin = false;
+        this.hasFlucloxacillin = false; // Replaced Daptomycin
         
         // Dash
         this.dashing = false;
@@ -688,8 +688,8 @@ class Player extends Entity {
                 }
             }
 
-            // Dash
-            if (keys.c && !inputState.dashPressed && this.hasDaptomycin && this.dashCooldown <= 0) {
+            // Dash - NOW CHECKS FLUCLOXACILLIN
+            if (keys.c && !inputState.dashPressed && this.hasFlucloxacillin && this.dashCooldown <= 0) {
                 this.dashing = true;
                 this.dashTimer = 10;
                 this.dashCooldown = 40;
@@ -911,7 +911,7 @@ class Player extends Entity {
             let bladeColor = '#E0E0E0';
             if (this.hasVancomycin) {
                 bladeColor = '#00ffaa';
-            } else if (this.hasDaptomycin) {
+            } else if (this.hasFlucloxacillin) { // REPLACED DAPTOMYCIN
                 bladeColor = '#00ccff';
             } else if (this.hasAmoxicillin) {
                 bladeColor = '#ff99cc';
@@ -1434,9 +1434,9 @@ class Pickup {
             if (this.type === 'vancomycin') {
                 player.hasVancomycin = true;
                 showModal('vancomycin');
-            } else if (this.type === 'daptomycin') {
-                player.hasDaptomycin = true;
-                showModal('daptomycin');
+            } else if (this.type === 'flucloxacillin') {
+                player.hasFlucloxacillin = true;
+                showModal('flucloxacillin');
             } else if (this.type === 'amoxicillin') {
                 player.hasAmoxicillin = true;
                 showModal('amoxicillin');
@@ -1466,7 +1466,7 @@ class Pickup {
             ctx.lineTo(dx + 25, dy);
             ctx.lineTo(dx, dy + 25);
             ctx.fill();
-        } else if (this.type === 'daptomycin') {
+        } else if (this.type === 'flucloxacillin') {
             ctx.fillStyle = '#00ccff'; // Blue for Dash
             // Wing shape
             ctx.beginPath();
@@ -1644,7 +1644,7 @@ function initLevel() {
     platforms.push({ x: 2500, y: 380, w: 80, h: 20 });
     platforms.push({ x: 2700, y: 300, w: 200, h: 20 });
     
-    pickups.push(new Pickup(2800, 250, 'daptomycin'));
+    pickups.push(new Pickup(2800, 250, 'flucloxacillin'));
     
     // Path to Boss
     platforms.push({ x: 2900, y: 500, w: 2000, h: 40 }); // Long floor to boss
