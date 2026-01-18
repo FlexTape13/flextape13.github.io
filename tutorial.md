@@ -1,8 +1,8 @@
----
+
 layout: page
 title: "tutorial"
 permalink: /tutorial
----
+
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
   <iframe
@@ -14,15 +14,15 @@ permalink: /tutorial
   </iframe>
 </div>
 
-# MRSA
+ MRSA
 
 **Methicillin-resistant *Staphylococcus aureus* (MRSA)** is a type of bacterium that is resistant to several commonly used antibiotics. It is primarily transmitted through direct contact with contaminated skin or surfaces and is commonly associated with healthcare facilities and other environments involving frequent human contact.
 
 This project focuses on the environmental and contact-based aspects of MRSA rather than pharmaceutical treatment.
 
----
 
-## Survival on Surfaces
+
+ Survival on Surfaces
 
 MRSA is capable of surviving on a variety of inanimate surfaces for extended periods of time. Survival duration depends on environmental conditions such as humidity, temperature, and surface material.
 
@@ -35,9 +35,9 @@ Commonly affected surfaces include:
 
 Contaminated surfaces can act as reservoirs, allowing repeated transfer of bacteria through indirect contact.
 
----
 
-## Skin Colonization
+
+ Skin Colonization
 
 Human skin is the primary site of MRSA colonization. Individuals may carry MRSA on the skin or in the nasal passages without showing symptoms of infection.
 
@@ -48,9 +48,9 @@ Transmission occurs through:
 
 Asymptomatic carriers contribute to the spread of MRSA by transferring bacteria without visible signs of infection.
 
----
 
-## Environmental Transmission
+
+ Environmental Transmission
 
 MRSA transmission is often maintained through a combination of surface contamination and repeated contact. Environments with high population density or shared facilities increase the likelihood of spread.
 
@@ -60,20 +60,20 @@ Control efforts commonly focus on:
 - Use of physical barriers such as gloves or clothing
 - Reducing opportunities for skin exposure
 
----
 
-## Emphasis on Non-Pharmaceutical Control
+
+ Emphasis on Non-Pharmaceutical Control
 
 While antibiotic resistance is a defining characteristic of MRSA, environmental management plays a critical role in limiting transmission. Preventive measures aimed at reducing surface contamination and contact frequency are often more effective at reducing spread than treatment after infection has occurred.
 
----
 
-## Disclaimer
+
+ Disclaimer
 
 This page provides general background information and is not intended as medical advice.
 
 
-## References
+ References
 
 Bush, K., & Bradford, P. A. (2016). β-Lactams and β-lactamase inhibitors: An overview. *Cold Spring Harbor Perspectives in Medicine, 6*(8), a025247. https://doi.org/10.1101/cshperspect.a025247
 
