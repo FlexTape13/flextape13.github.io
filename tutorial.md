@@ -3,7 +3,7 @@ layout: page
 title: "tutorial"
 permalink: /tutorial
 ---
-^ Click here to play the game!
+## ^ Click here to play the game!
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-bottom: 2rem;">
   <iframe
@@ -15,8 +15,7 @@ permalink: /tutorial
   </iframe>
 </div>
 
-**References**
-
+## References
 
 Bush, K., & Bradford, P. A. (2016). β-Lactams and β-lactamase inhibitors: An overview. *Cold Spring Harbor Perspectives in Medicine, 6*(8), a025247. https://doi.org/10.1101/cshperspect.a025247
 
