@@ -33,9 +33,19 @@ p {
 }
 
 body {
-  background: linear-gradient(180deg, #181818, #0f0f0f);
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 60%),
+    linear-gradient(180deg, #181818, #0f0f0f),
+    url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>\
+<filter id='n'>\
+  <feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/>\
+</filter>\
+<rect width='120' height='120' filter='url(%23n)' opacity='0.025'/>\
+</svg>");
   color: #eaeaea;
 }
+
 
 .title-link {
   background-color: #3f3f3f;
