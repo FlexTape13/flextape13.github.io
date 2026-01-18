@@ -37,9 +37,9 @@ Contaminated surfaces can act as reservoirs, allowing repeated transfer of bacte
 
 
 
- Skin Colonization
+ Skin Colonisation
 
-Human skin is the primary site of MRSA colonization. Individuals may carry MRSA on the skin or in the nasal passages without showing symptoms of infection.
+Human skin is the primary site of MRSA colonisation. Individuals may carry MRSA on the skin or in the nasal passages without showing symptoms of infection.
 
 Transmission occurs through:
 - Direct skin-to-skin contact
@@ -79,7 +79,7 @@ Bush, K., & Bradford, P. A. (2016). β-Lactams and β-lactamase inhibitors: An o
 
 Centers for Disease Control and Prevention. (2024). *Staphylococcus aureus basics*. https://www.cdc.gov/staphylococcus-aureus/about/index.html
 
-Menezes, M. N. D., de Marco, B. A., Fiorentino, F. A. M., Zimmermann, A., Kogawa, A. C., & Salgado, H. R. N. (2019). Flucloxacillin: A review of characteristics, properties and analytical methods. *Critical Reviews in Analytical Chemistry, 49*(1), 67–77. https://doi.org/10.1080/10408347.2018.1468728
+Meneses, M. N. D., de Marco, B. A., Fiorentino, F. A. M., simmermann, A., Kogawa, A. C., & Salgado, H. R. N. (2019). Flucloxacillin: A review of characteristics, properties and analytical methods. *Critical Reviews in Analytical Chemistry, 49*(1), 67–77. https://doi.org/10.1080/10408347.2018.1468728
 
 Mergenhagen, K. A., & Borton, A. R. (2014). Vancomycin nephrotoxicity: A review. *Journal of Pharmacy Practice, 27*(6), 545–553. https://doi.org/10.1177/0897190014546114
 
