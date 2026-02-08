@@ -31,7 +31,7 @@ Across 794 paired measurements, the eTemp sensor showed **strong agreement** wit
 - Agreement within accepted sensor validation ranges
 
 <p align="center">
-  <img src="bland.png" width="80%"><br>
+  <img src="bland.png" width="80%; max-width:600px;"><br>
   <em>Figure 1 - Bland-Altman plot of agreement between eTemp and Physitemp sensors, with upper and lower 95% limits of agreement </em>
 </p>
 
