@@ -30,8 +30,11 @@ Across 794 paired measurements, the eTemp sensor showed **strong agreement** wit
 - Lowest bias during recovery: **0.19°C**
 - Agreement within accepted sensor validation ranges
 
-![Bland-Altman Plot](bland.png)
-*aaaaaaaa
+<p align="center">
+  <img src="bland.png" width="80%"><br>
+  <em>Figure 1 - Bland-Altman plot of agreement between eTemp and Physitemp sensors, with upper and lower 95% limits of agreement </em>
+</p>
+
 ---
 
 ## Methods Summary
