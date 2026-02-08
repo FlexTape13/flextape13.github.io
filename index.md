@@ -30,6 +30,8 @@ Across 794 paired measurements, the eTemp sensor showed **strong agreement** wit
 - Lowest bias during recovery: **0.19°C**
 - Agreement within accepted sensor validation ranges
 
+![Bland-Altman Plot](bland.png)
+*aaaaaaaa
 ---
 
 ## Methods Summary
