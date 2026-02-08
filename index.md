@@ -1,7 +1,3 @@
----
-layout: default
-title: 
----
 # Accuracy and Reliability of a Wireless Skin Temperature Sensor (eTemp) Compared to a Thermistor-Based Reference (Physitemp SST-1) During Heat Stress
 **Felix Chen**
 
