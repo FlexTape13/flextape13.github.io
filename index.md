@@ -21,14 +21,14 @@ Across 794 paired measurements, the eTemp sensor showed **strong agreement** wit
 
 ---
 
-> ## Key Findings
+## Key Findings
 
-> - Mean bias vs reference: **+0.27°C**
-> - 95% limits of agreement: **−0.08°C to 0.62°C**
-> - Mean absolute error: **0.27°C**
-> - Highest bias during exercise: **0.32°C**
-> - Lowest bias during recovery: **0.19°C**
-> - Agreement within accepted sensor validation ranges
+- Mean bias vs reference: **+0.27°C**
+- 95% limits of agreement: **−0.08°C to 0.62°C**
+- Mean absolute error: **0.27°C**
+- Highest bias during exercise: **0.32°C**
+- Lowest bias during recovery: **0.19°C**
+- Agreement within accepted sensor validation ranges
 
 ---
 
