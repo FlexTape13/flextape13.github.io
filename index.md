@@ -5,7 +5,13 @@ title:
 # Accuracy and Reliability of a Wireless Skin Temperature Sensor (eTemp) Compared to a Thermistor-Based Reference (Physitemp SST-1) During Heat Stress
 **Felix Chen**
 
-Griffith University School of Medicine and Dentistry. Gold Coast, Queensland, Australia
+Griffith University School of Medicine and Dentistry, Gold Coast, Queensland, Australia
+
+---
+## Download & Resources
+
+[Full Paper (PDF)](paper.pdf)  
+[Scientific Poster (PDF)](poster.pdf)  
 
 ---
 
@@ -30,13 +36,7 @@ Across 794 paired measurements, the eTemp sensor showed **strong agreement** wit
 
 ---
 
-## Download & Resources
 
-📄 [Full Paper (PDF)](paper.pdf)  
-🖼 [Scientific Poster (PDF)](poster.pdf)  
-📊 [Data / Analysis Code](https://github.com/YOURCODELINK)
-
----
 
 ## Methods Summary
 
