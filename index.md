@@ -35,7 +35,7 @@ Across 794 paired measurements, the eTemp sensor showed **strong agreement** wit
 ## Methods Summary
 
 - **Participants:** n = 14 (18–35 yrs)
-- **Environment:** 35.02°C , 41% RH
+- **Environment:** 35.02°C ± 0.49°C , 41% RH ± 1.48%
 - **Protocol:** 15 min rest → 30 min cycling → 15 min recovery
 - **Analysis:** Bland–Altman ([5](#references)) agreement with bias and limits of agreement
 
