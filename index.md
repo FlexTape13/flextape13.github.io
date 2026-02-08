@@ -1,4 +1,4 @@
-# Comparing the Accuracy and Reliability of eTemp Sensor Compared to a Thermistor-Based Reference During Heat Stress
+# Comparing the Accuracy and Reliability of eTemp Sensor to a Thermistor-Based Reference During Heat Stress
 **Felix Chen**
 
 Griffith University School of Medicine and Dentistry, Gold Coast, Queensland, Australia
